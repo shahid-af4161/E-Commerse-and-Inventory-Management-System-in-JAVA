@@ -1,43 +1,69 @@
 package main;
 
+import inventory.InventoryManager;
 import products.*;
 public class Main {
     public static void main(String[] args) {
-        System.out.println("==================================");
-        System.out.println("    PRODUCT HIERARCHY TEST");
-        System.out.println("==================================");
-
-        Product[] products = new Product[3];
-         products[0] = new Electronics(
+        System.out.println("===== ADDING PRODUCTS =====");
+        InventoryManager inventory = new InventoryManager();
+        
+         Product p1 = new Electronics(
             101, "Laptop", "HP Laptop",
             55000, 10, "HP", 2
         );
 
-        products[1] = new Clothing(
+        Product p2 = new Clothing(
             102, "T-Shirt", "Cotton T-Shirt",
-            500, 30, "L", "Cotton"
+            500, 3, "L", "Cotton"
         );
 
-        products[2] = new Book(
-            103, "Java Programming",
-            "Complete Java Guide", 650,
-            15, "Herbert Schildt", "McGraw Hill"
+        Product p3 = new Book(
+            103, "Java Programming", "Java Guide",
+            650, 2, "Herbert Schildt", "McGraw Hill"
         );
 
-        for( Product product : products){
-            product.displayDetails();
+        inventory.addProduct(p1);
+        inventory.addProduct(p2);
+        inventory.addProduct(p3);
+
+
+        inventory.addProduct(p1);
+
+        System.out.println("\n===== ALL PRODUCTS =====");
+        inventory.displayAllProducts();
+
+        System.out.println("\n===== SEARCH PRODUCT =====");
+
+        Product result = inventory.findProduct(102);
+
+        if (result != null) {
+            result.displayDetails();
+        } else {
+            System.out.println("Product not found.");
         }
 
-        // Testing encapsulation
-        System.out.println("\n--- ENCAPSULATION TEST ---");
+        System.out.println("\n===== SEARCH INVALID ID =====");
 
-        System.out.println("Laptop Price : "+ products[0].getPrice());
-        products[0].updatePrice(60000);
+        if (inventory.findProduct(999) == null) {
+            System.out.println("Product not found.");
+        }
 
-        products[0].increaseStock(5);
-        System.out.println("Updated Stock : "+ products[0].getStock());
+        System.out.println("\n===== RESTOCKING =====");
 
-        products[0].decreaseStock(2);
-        System.out.println("Stock after purchase : "+products[0].getStock());
+        inventory.restockProduct(102, 10);
+
+        System.out.println("\n===== LOW STOCK PRODUCTS =====");
+
+        inventory.displayLowStockProducts(5);
+
+        System.out.println("\n===== REMOVING PRODUCT =====");
+
+        boolean removed = inventory.removeProduct(103);
+
+        System.out.println("Removal successful: " + removed);
+
+        System.out.println("\n===== FINAL INVENTORY =====");
+
+        inventory.displayAllProducts();
     }
 }
