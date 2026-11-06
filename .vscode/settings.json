@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": [ //sourcePaths tells VS Code that src is the root directory containing Java source files.
+        "src"
+    ],
+    "java.project.outputPath": "out", //outputPath tells Java to put compiled .class files inside out,
+                                        // rather than mixing them with your source files.
+    "code-runner.fileDirectoryAsCwd": false,
+    "code-runner.cwd": "$workspaceRoot"
+}
