@@ -1,69 +1,87 @@
+
 package main;
 
-import inventory.InventoryManager;
-import products.*;
+import models.Customer;
+import services.CustomerService;
+
 public class Main {
+
     public static void main(String[] args) {
-        System.out.println("===== ADDING PRODUCTS =====");
-        InventoryManager inventory = new InventoryManager();
-        
-         Product p1 = new Electronics(
-            101, "Laptop", "HP Laptop",
-            55000, 10, "HP", 2
+
+        CustomerService service = new CustomerService();
+
+        System.out.println("===== CUSTOMER REGISTRATION =====");
+
+        Customer c1 = new Customer(
+            101, "Rahul Kumar",
+            "rahul@gmail.com", "rahul1234",
+            "9876543210", "Patna, Bihar"
         );
 
-        Product p2 = new Clothing(
-            102, "T-Shirt", "Cotton T-Shirt",
-            500, 3, "L", "Cotton"
+        Customer c2 = new Customer(
+            102, "Aman Singh",
+            "aman@gmail.com", "aman1234",
+            "9876543211", "Gaya, Bihar"
         );
 
-        Product p3 = new Book(
-            103, "Java Programming", "Java Guide",
-            650, 2, "Herbert Schildt", "McGraw Hill"
+        System.out.println("Registration 1: "
+                + service.registerCustomer(c1));
+
+        System.out.println("Registration 2: "
+                + service.registerCustomer(c2));
+
+        System.out.println("\n===== DUPLICATE ID TEST =====");
+
+        Customer duplicateId = new Customer(
+            101, "Another User",
+            "another@gmail.com", "another123",
+            "9876543212", "Delhi"
         );
 
-        inventory.addProduct(p1);
-        inventory.addProduct(p2);
-        inventory.addProduct(p3);
+        System.out.println("Registration: "
+                + service.registerCustomer(duplicateId));
 
+        System.out.println("\n===== DUPLICATE EMAIL TEST =====");
 
-        inventory.addProduct(p1);
+        Customer duplicateEmail = new Customer(
+            103, "Another User",
+            "rahul@gmail.com", "another123",
+            "9876543213", "Delhi"
+        );
 
-        System.out.println("\n===== ALL PRODUCTS =====");
-        inventory.displayAllProducts();
+        System.out.println("Registration: "
+                + service.registerCustomer(duplicateEmail));
 
-        System.out.println("\n===== SEARCH PRODUCT =====");
+        System.out.println("\n===== DISPLAY CUSTOMERS =====");
 
-        Product result = inventory.findProduct(102);
+        service.displayAllCustomers();
+
+        System.out.println("\n===== CUSTOMER SEARCH =====");
+
+        Customer result = service.findCustomerById(101);
 
         if (result != null) {
-            result.displayDetails();
+            System.out.println("Found: " + result.getName());
         } else {
-            System.out.println("Product not found.");
+            System.out.println("Customer not found.");
         }
 
-        System.out.println("\n===== SEARCH INVALID ID =====");
+        System.out.println("\n===== SUCCESSFUL LOGIN =====");
 
-        if (inventory.findProduct(999) == null) {
-            System.out.println("Product not found.");
+        Customer loggedIn = service.login(
+            "rahul@gmail.com", "rahul1234"
+        );
+
+        if (loggedIn != null) {
+            System.out.println("Welcome, " + loggedIn.getName());
         }
 
-        System.out.println("\n===== RESTOCKING =====");
+        System.out.println("\n===== WRONG PASSWORD TEST =====");
 
-        inventory.restockProduct(102, 10);
+        service.login("rahul@gmail.com", "wrongpassword");
 
-        System.out.println("\n===== LOW STOCK PRODUCTS =====");
+        System.out.println("\n===== INVALID EMAIL TEST =====");
 
-        inventory.displayLowStockProducts(5);
-
-        System.out.println("\n===== REMOVING PRODUCT =====");
-
-        boolean removed = inventory.removeProduct(103);
-
-        System.out.println("Removal successful: " + removed);
-
-        System.out.println("\n===== FINAL INVENTORY =====");
-
-        inventory.displayAllProducts();
+        service.login("unknown@gmail.com", "password123");
     }
 }

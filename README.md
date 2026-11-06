@@ -60,7 +60,6 @@ Each category has its own attributes and product details.
 
 ## Project Structure
 
-```text
 ECommerseSystem/
 ├── src/
 │   ├── main/
@@ -78,7 +77,6 @@ ECommerseSystem/
 ├── data/
 ├── .vscode/
 └── README.md
-```
 
 ## How to Run
 
