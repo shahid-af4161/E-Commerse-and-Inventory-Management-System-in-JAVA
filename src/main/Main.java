@@ -1,87 +1,64 @@
 
 package main;
 
-import models.Customer;
-import services.CustomerService;
+import cart.ShoppingCart;
+import products.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        CustomerService service = new CustomerService();
+        ShoppingCart cart = new ShoppingCart();
 
-        System.out.println("===== CUSTOMER REGISTRATION =====");
-
-        Customer c1 = new Customer(
-            101, "Rahul Kumar",
-            "rahul@gmail.com", "rahul1234",
-            "9876543210", "Patna, Bihar"
+        Product laptop = new Electronics(
+            101, "Laptop", "HP Laptop",
+            55000, 10, "HP", 2
         );
 
-        Customer c2 = new Customer(
-            102, "Aman Singh",
-            "aman@gmail.com", "aman1234",
-            "9876543211", "Gaya, Bihar"
+        Product tshirt = new Clothing(
+            102, "T-Shirt", "Cotton T-Shirt",
+            500, 20, "L", "Cotton"
         );
 
-        System.out.println("Registration 1: "
-                + service.registerCustomer(c1));
-
-        System.out.println("Registration 2: "
-                + service.registerCustomer(c2));
-
-        System.out.println("\n===== DUPLICATE ID TEST =====");
-
-        Customer duplicateId = new Customer(
-            101, "Another User",
-            "another@gmail.com", "another123",
-            "9876543212", "Delhi"
+        Product book = new Book(
+            103, "Java Programming", "Java Guide",
+            650, 15, "Herbert Schildt", "McGraw Hill"
         );
 
-        System.out.println("Registration: "
-                + service.registerCustomer(duplicateId));
+        System.out.println("===== ADD PRODUCTS =====");
 
-        System.out.println("\n===== DUPLICATE EMAIL TEST =====");
+        cart.addToCart(laptop, 2);
+        cart.addToCart(tshirt, 3);
+        cart.addToCart(book, 1);
 
-        Customer duplicateEmail = new Customer(
-            103, "Another User",
-            "rahul@gmail.com", "another123",
-            "9876543213", "Delhi"
-        );
+        System.out.println("\n===== ADD DUPLICATE PRODUCT =====");
 
-        System.out.println("Registration: "
-                + service.registerCustomer(duplicateEmail));
+        cart.addToCart(laptop, 1);
 
-        System.out.println("\n===== DISPLAY CUSTOMERS =====");
+        System.out.println("\n===== DISPLAY CART =====");
 
-        service.displayAllCustomers();
+        cart.displayCart();
 
-        System.out.println("\n===== CUSTOMER SEARCH =====");
+        System.out.println("\n===== ITEM COUNT =====");
 
-        Customer result = service.findCustomerById(101);
+        System.out.println("Distinct products: " + cart.getItemCount());
 
-        if (result != null) {
-            System.out.println("Found: " + result.getName());
-        } else {
-            System.out.println("Customer not found.");
-        }
+        System.out.println("\n===== UPDATE QUANTITY =====");
 
-        System.out.println("\n===== SUCCESSFUL LOGIN =====");
+        cart.updateCartItem(102, 5);
 
-        Customer loggedIn = service.login(
-            "rahul@gmail.com", "rahul1234"
-        );
+        System.out.println("\n===== REMOVE PRODUCT =====");
 
-        if (loggedIn != null) {
-            System.out.println("Welcome, " + loggedIn.getName());
-        }
+        cart.removeFromCart(103);
 
-        System.out.println("\n===== WRONG PASSWORD TEST =====");
+        System.out.println("\n===== FINAL CART =====");
 
-        service.login("rahul@gmail.com", "wrongpassword");
+        cart.displayCart();
 
-        System.out.println("\n===== INVALID EMAIL TEST =====");
+        System.out.println("\n===== CLEAR CART =====");
 
-        service.login("unknown@gmail.com", "password123");
+        cart.clearCart();
+
+        System.out.println("Is cart empty? " + cart.isEmpty());
     }
 }
