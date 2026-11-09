@@ -1,64 +1,94 @@
 
 package main;
 
-import cart.ShoppingCart;
 import products.*;
+import inventory.InventoryManager;
+import cart.ShoppingCart;
+import services.OrderService;
+import models.Order;
+import enums.OrderStatus;
 
 public class Main {
 
     public static void main(String[] args) {
 
+        InventoryManager inventory = new InventoryManager();
+
+        OrderService orderService = new OrderService(inventory);
+
         ShoppingCart cart = new ShoppingCart();
 
+        // Create products
         Product laptop = new Electronics(
             101, "Laptop", "HP Laptop",
             55000, 10, "HP", 2
         );
 
-        Product tshirt = new Clothing(
-            102, "T-Shirt", "Cotton T-Shirt",
-            500, 20, "L", "Cotton"
-        );
-
         Product book = new Book(
-            103, "Java Programming", "Java Guide",
+            102, "Java Programming", "Java Guide",
             650, 15, "Herbert Schildt", "McGraw Hill"
         );
 
-        System.out.println("===== ADD PRODUCTS =====");
+        inventory.addProduct(laptop);
+        inventory.addProduct(book);
+
+        System.out.println("\n===== INITIAL STOCK =====");
+        inventory.displayAllProducts();
+
+        // Add products to cart
+        System.out.println("\n===== ADD TO CART =====");
 
         cart.addToCart(laptop, 2);
-        cart.addToCart(tshirt, 3);
-        cart.addToCart(book, 1);
+        cart.addToCart(book, 3);
 
-        System.out.println("\n===== ADD DUPLICATE PRODUCT =====");
+        // Create order
+        System.out.println("\n===== CREATE ORDER =====");
 
-        cart.addToCart(laptop, 1);
+        Order order = orderService.createOrder(1001, 501, cart);
 
-        System.out.println("\n===== DISPLAY CART =====");
+        order.displayOrder();
 
-        cart.displayCart();
+        // Verify stock deduction
+        System.out.println("\n===== STOCK AFTER ORDER =====");
+        inventory.displayAllProducts();
 
-        System.out.println("\n===== ITEM COUNT =====");
+        // Find order
+        System.out.println("\n===== FIND ORDER =====");
 
-        System.out.println("Distinct products: " + cart.getItemCount());
+        Order found = orderService.findOrderById(1001);
 
-        System.out.println("\n===== UPDATE QUANTITY =====");
+        if (found != null)
+            System.out.println("Order found: " + found.getOrderId());
 
-        cart.updateCartItem(102, 5);
+        // Customer order history
+        System.out.println("\n===== CUSTOMER ORDER HISTORY =====");
 
-        System.out.println("\n===== REMOVE PRODUCT =====");
+        orderService.displayCustomerOrders(501);
 
-        cart.removeFromCart(103);
+        // Update order status
+        System.out.println("\n===== UPDATE STATUS =====");
 
-        System.out.println("\n===== FINAL CART =====");
+        orderService.updateOrderStatus(
+            1001, OrderStatus.CONFIRMED
+        );
 
-        cart.displayCart();
+        // Cancel order
+        System.out.println("\n===== CANCEL ORDER =====");
 
-        System.out.println("\n===== CLEAR CART =====");
+        orderService.cancelOrder(1001);
 
-        cart.clearCart();
+        // Verify stock restoration
+        System.out.println("\n===== STOCK AFTER CANCELLATION =====");
+        inventory.displayAllProducts();
 
-        System.out.println("Is cart empty? " + cart.isEmpty());
+        // Try cancelling again
+        System.out.println("\n===== REPEATED CANCELLATION =====");
+
+        orderService.cancelOrder(1001);
+
+        // Display all orders
+        System.out.println("\n===== ALL ORDERS =====");
+
+        orderService.displayAllOrders();
     }
 }

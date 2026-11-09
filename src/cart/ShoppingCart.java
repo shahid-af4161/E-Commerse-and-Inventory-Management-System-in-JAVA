@@ -126,4 +126,8 @@ public class ShoppingCart {
     public int getItemCount() {
         return items.size();
     }
+
+    public ArrayList<CartItem> getItems() {
+        return new ArrayList<>(items);
+    }
 }
