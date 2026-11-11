@@ -2,6 +2,7 @@
 package services;
 
 import enums.OrderStatus;
+import enums.PaymentStatus;
 import enums.PaymentType;
 import java.util.ArrayList;
 import models.Order;
@@ -181,5 +182,42 @@ public class PaymentService {
 
         if (!found)
             System.out.println("No payment records found.");
+    }
+
+    public boolean collectCODPayment(int orderId) {
+        Order order = orderService.findOrderById(orderId);
+        if (order == null) {
+            System.out.println("Order not found.");
+            return false;
+        }
+        if (order.getStatus() != OrderStatus.DELIVERED) {
+            System.out.println(
+                "COD payment can only be collected after delivery."
+            );
+            return false;
+        }
+
+        Payment codPayment = null;
+        for (Payment payment : payments) {
+            if (payment.getOrderId() == orderId &&
+                payment.getPaymentType() == PaymentType.CASH_ON_DELIVERY) {
+                codPayment = payment;
+                break;
+            }
+        }
+
+        if (codPayment == null) {
+            System.out.println("No COD payment record found.");
+            return false;
+        }
+        if (codPayment.getStatus() != PaymentStatus.PENDING) {
+            System.out.println(
+                "COD payment has already been processed."
+            );
+            return false;
+        }
+        codPayment.markSuccessful();
+        System.out.println("COD payment collected successfully.");
+        return true;
     }
 }
